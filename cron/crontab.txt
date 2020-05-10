@@ -1,0 +1,1 @@
+*/10 * * * * python /app/speedtester/speedtester.py > /dev/stdout
