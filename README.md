@@ -13,4 +13,6 @@ docker run --name speedtest \\
   -d akop/automatic_speedtest:v0.1.0-arm32v6
 ```
 
+Now you can visit your device with a webbrowser (if it the same device http://localhost:8080).
+Ensure that you raspberry is using a wired-connection. Don't check over WLAN.
 
