@@ -1,6 +1,21 @@
+FROM node as builder
+
+
+# install dependencies first (so the dependencies can be a own layer)
+COPY www/package*.json ./
+RUN npm ci && mkdir /ng-app && mv ./node_modules ./ng-app
+
+WORKDIR /ng-app
+
+# only take the relevant files to deploy
+COPY www/*.json ./
+COPY www/src ./src/
+RUN npm run build -- --configuration=production
+
+
 FROM python:3.7-alpine
 
-MAINTAINER Andre Köpke<akop@akop.top>
+MAINTAINER Andre Köpke<speedtester@akop.top>
 
 # install nginx-server
 RUN apk add --no-cache nginx && \
@@ -32,7 +47,7 @@ RUN chmod +x /entrypoint.sh && \
 COPY py-scritps/speedtester /app/speedtester
 
 # html-files
-COPY www /www/
+COPY --from=builder /ng-app/dist/www/ /www/
 
 ENV EXPORT_PATH=/measurements/recorded.txt
 WORKDIR /app/

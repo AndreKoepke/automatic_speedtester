@@ -1,0 +1,75 @@
+<div class="container">
+
+  <ng-container *ngIf="loaded">
+
+    <div class="row mt-5 mb-5">
+
+      <div class="col-6">
+        <h3>
+          Average
+          <small class="text-muted">Alltime</small>
+        </h3>
+
+        <div class="container">
+          <div class="row">
+            <div class="col-5">up</div>
+            <div class="col-7">{{ transformToMbit(avg('upload'))}} Mbit</div>
+          </div>
+
+          <div class="row">
+            <div class="col-5">down</div>
+            <div class="col-7">{{ transformToMbit(avg('download')) }} Mbit</div>
+          </div>
+
+          <div class="row">
+            <div class="col-5">ping</div>
+            <div class="col-7">{{ avg('ping') }} ms</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-6">
+        <h3>
+          Average
+          <small class="text-muted">Last 24h</small>
+        </h3>
+
+        <div class="container">
+          <div class="row">
+            <div class="col-5">up</div>
+            <div class="col-7">{{ transformToMbit(avg('upload', true))}} Mbit</div>
+          </div>
+
+          <div class="row">
+            <div class="col-5">down</div>
+            <div class="col-7">{{ transformToMbit(avg('download', true)) }} Mbit</div>
+          </div>
+
+          <div class="row">
+            <div class="col-5">down</div>
+            <div class="col-7">{{ avg('ping', true) }} ms</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <canvas baseChart
+                [datasets]="chartData"
+                [labels]="barChartLabels"
+                [options]="barChartOptions"
+                [legend]="barChartLegend"
+                [chartType]="barChartType">
+        </canvas>
+      </div>
+    </div>
+  </ng-container>
+
+
+</div>
+
+
