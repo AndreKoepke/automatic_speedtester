@@ -16,3 +16,6 @@ docker run --name speedtest \\
 Now you can visit your device with a webbrowser (if it the same device http://localhost:8080).
 Ensure that you raspberry is using a wired-connection. Don't check over WLAN.
 
+# Screen
+
+![github-large](https://raw.githubusercontent.com/AndreKoepke/automatic_speedtester/master/screen.png)
