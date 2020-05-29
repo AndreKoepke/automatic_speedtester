@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/co
 import {HttpClient} from "@angular/common/http";
 import {Papa} from "ngx-papaparse";
 import * as moment from 'moment';
+import {MbitPipe} from "./pipes/mbit-pipe.pipe";
 
 
 @Component({
@@ -12,7 +13,7 @@ import * as moment from 'moment';
 })
 export class AppComponent {
 
-  public csvData: { datetime: moment.Moment, upload: number, download: number, ping: number }[];
+  public data: { datetime: moment.Moment, upload: number, download: number, ping: number }[];
 
   public chartData;
   public barChartOptions = {
@@ -20,7 +21,7 @@ export class AppComponent {
     responsive: true,
     elements: {
       point: {
-        radius: 0
+        radius: 3
       }
     },
     scales: {
@@ -47,14 +48,14 @@ export class AppComponent {
 
   constructor(private http: HttpClient, private papa: Papa, private changeDetection: ChangeDetectorRef) {
 
-    http.get("measurements/recorded.txt", {responseType: 'text'})
+    http.get("http://192.168.22.45:8080/measurements/recorded.txt", {responseType: 'text'})
       .subscribe(csvText =>
         papa.parse(csvText, {
           header: true,
           delimiter: ',',
           complete: results => {
-            this.csvData = results.data;
-            this.csvData = this.csvData
+            this.data = results.data;
+            this.data = this.data
               .filter(line => line.upload != undefined && line.download != undefined)
               .map(line => {
                 return {
@@ -65,14 +66,22 @@ export class AppComponent {
                 }
               })
 
+
+            let dateBefore24h = moment();
+            dateBefore24h.subtract(1, 'day');
+            let filtered = this.data.filter(line => line.datetime >= dateBefore24h);
+
             this.chartData = [
-              {data: this.csvData.map(value => this.transformToMbit(value.upload)), label: 'upload (in Mbit)'},
               {
-                data: this.csvData.map(value => this.transformToMbit(value.download)),
+                data: filtered.map(value => MbitPipe.toMbitNumber(value.upload)),
+                label: 'upload (in Mbit)'
+              },
+              {
+                data: filtered.map(value => MbitPipe.toMbitNumber(value.download)),
                 label: 'download (in Mbit)'
               }
             ];
-            this.barChartLabels = this.csvData.map(value => value.datetime);
+            this.barChartLabels = filtered.map(value => value.datetime);
 
             this.loaded = true;
             changeDetection.detectChanges();
@@ -82,16 +91,12 @@ export class AppComponent {
   }
 
 
-  public transformToMbit(number: number): number {
-    return Math.round(number / Math.pow(10, 4)) / Math.pow(10, 2);
-  }
-
   public avg(name: string, last24?: boolean): number {
 
     let dateBefore24h = moment();
     dateBefore24h.subtract(1, 'day');
 
-    const values: number[] = this.csvData
+    const values: number[] = this.data
       .filter(line => last24 ? line.datetime >= dateBefore24h : true)
       .map(line => line[name]);
 
