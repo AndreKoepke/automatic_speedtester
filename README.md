@@ -10,7 +10,7 @@ docker run --name speedtest \\
   --restart always \\
   -v `pwd`/speedtest/:/measurements \\
   -p 8080:80 \\
-  -d akop/automatic_speedtest:v0.1.0-arm32v6
+  -d akop/automatic_speedtest:v0.1.1-arm32v6
 ```
 
 Now you can visit your device with a webbrowser (if it the same device http://localhost:8080).
