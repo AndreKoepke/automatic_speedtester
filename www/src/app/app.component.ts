@@ -54,8 +54,7 @@ export class AppComponent {
           header: true,
           delimiter: ',',
           complete: results => {
-            this.csvData = results.data;
-            this.csvData = this.csvData
+            this.csvData = results.data
               .filter(line => line.upload != undefined && line.download != undefined)
               .map(line => {
                 return {
