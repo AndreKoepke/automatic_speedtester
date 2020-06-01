@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/co
 import {HttpClient} from "@angular/common/http";
 import {Papa} from "ngx-papaparse";
 import * as moment from 'moment';
+import {environment} from "../environments/environment";
 
 
 @Component({
@@ -47,7 +48,7 @@ export class AppComponent {
 
   constructor(private http: HttpClient, private papa: Papa, private changeDetection: ChangeDetectorRef) {
 
-    http.get("measurements/recorded.txt", {responseType: 'text'})
+    http.get(`${environment.hostOfCsv}${environment.pathOfCsv}`, {responseType: 'text'})
       .subscribe(csvText =>
         papa.parse(csvText, {
           header: true,
