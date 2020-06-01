@@ -4,30 +4,34 @@
 
     <div class="row mt-5 mb-5">
 
+      <ng-container *ngIf="data.slice(-1)[0] as last">
+        <div class="col-6 mb-2">
+          <h3>
+            Last Value
+            <small class="text-muted">at {{ last.datetime | date:'short' }}</small>
+          </h3>
+
+
+          <app-print-base-values [download]="last.download" [ping]="last.ping"
+                                 [upload]="last.upload"></app-print-base-values>
+
+
+        </div>
+      </ng-container>
+
+      <div class="offset-1"></div>
+
       <div class="col-6">
         <h3>
           Average
           <small class="text-muted">Alltime</small>
         </h3>
 
-        <div class="container">
-          <div class="row">
-            <div class="col-5">up</div>
-            <div class="col-7">{{ transformToMbit(avg('upload'))}} Mbit</div>
-          </div>
-
-          <div class="row">
-            <div class="col-5">down</div>
-            <div class="col-7">{{ transformToMbit(avg('download')) }} Mbit</div>
-          </div>
-
-          <div class="row">
-            <div class="col-5">ping</div>
-            <div class="col-7">{{ avg('ping') }} ms</div>
-          </div>
-        </div>
+        <app-print-base-values [upload]="avg('upload')" [ping]="avg('ping')"
+                               [download]="avg('download')"></app-print-base-values>
 
       </div>
+
 
       <div class="col-6">
         <h3>
@@ -35,28 +39,16 @@
           <small class="text-muted">Last 24h</small>
         </h3>
 
-        <div class="container">
-          <div class="row">
-            <div class="col-5">up</div>
-            <div class="col-7">{{ transformToMbit(avg('upload', true))}} Mbit</div>
-          </div>
+        <app-print-base-values [download]="avg('download', true)" [ping]="avg('ping', true)"
+                               [upload]="avg('upload', true)"></app-print-base-values>
 
-          <div class="row">
-            <div class="col-5">down</div>
-            <div class="col-7">{{ transformToMbit(avg('download', true)) }} Mbit</div>
-          </div>
-
-          <div class="row">
-            <div class="col-5">down</div>
-            <div class="col-7">{{ avg('ping', true) }} ms</div>
-          </div>
-        </div>
 
       </div>
 
     </div>
 
     <div class="row">
+      <h3>Last 24h</h3>
       <div class="col-12">
         <canvas baseChart
                 [datasets]="chartData"
